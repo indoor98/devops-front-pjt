@@ -1,52 +1,33 @@
-# 1. 이벤트 트리거(on)
-# 2. Jobs - runner
-# 3. source checkout
-# 4. setup node
-# 5. docker build
-# 6. docker login
-# 7. docker build and push
-# 파이프라인 작성이 끝나면 로컬 콘솔에서 이미지 빌드 , 실행
-# docker build ~~~~
-# docker run port(8080:8080) container_name image
-name: CI/CD for Vue.js Project
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-        
-    - name: Install Dependencies
-      run: npm install
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    - name: Docker Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Build and Push Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        context: ./
-        file: ./Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/gitaction_front:${{ github.sha }}
+name : Vue Front Build and Push
+# 1. 이벤트 트리거 (on)
+on :
+  push :
+    branches : [main]
+# 2. jobs - runner
+jobs :
+  build :
+    runs-on : ubuntu-latest
+    # 3. source checkout
+    steps :
+      - name : Source Checkout
+        uses : actions/checkout@v2
+      # 4. setup node
+      - name : Setup Node
+        uses : actions/setup-node@v2
+      # 5. docker build
+      - name : Docker buildx
+        uses : docker/setup-buildx-action@v2
+      # 6. docker login
+      - name : Docker Login
+        uses : docker/login-action@v2
+        with :
+          username : ${{ secrets.DOCKERHUB_USERNAME }}
+          password : ${{ secrets.DOCKERHUB_TOKEN }}
+      # 7. docker build and push
+      - name : Docker push
+        uses : docker/build-push-action@v2
+        with :
+          context : ./
+          file : ./Dockerfile
+          push : true
+          tags : ${{ secrets.DOCKERHUB_USERNAME }}/frontend-vue-pjt:${{github.sha}}
