@@ -38,7 +38,7 @@ RUN npm install
 RUN npm run build
 
 # production
-FROM node:latest-alpine AS production
+FROM node:latest AS production
 WORKDIR /frontapp
 COPY . /frontapp
 CMD ["npm", "run", "serve"]
