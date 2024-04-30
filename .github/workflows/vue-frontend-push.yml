@@ -1,0 +1,45 @@
+# 1. 이벤트 트리거(on)
+# 2. Jobs - runner
+# 3. source checkout
+# 4. setup node
+# 5. docker build
+# 6. docker login
+# 7. docker build and push
+# 파이프라인 작성이 끝나면 로컬 콘솔에서 이미지 빌드 , 실행
+# docker build ~~~~
+# docker run port(8080:8080) container_name image
+
+name: CI/CD for Vue.js Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        
+    - name: Install Dependencies
+      run: npm install
+      
+    - name: Build and Publish Docker Image
+      run: |
+        docker build -t your-dockerhub-username/vue-project:latest .
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        docker push your-dockerhub-username/vue-project:latest
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
