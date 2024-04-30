@@ -40,5 +40,5 @@ RUN npm run build
 # production
 FROM node:latest AS production
 WORKDIR /frontapp
-COPY . /frontapp
+COPY --from=build /frontapp .
 CMD ["npm", "run", "serve"]
