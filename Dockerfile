@@ -30,4 +30,15 @@ EXPOSE 8080
 # CMD ["json-server", "--watch", "db.json"]
 CMD ["npm", "run", "serve"]
 
+# # git-action version
+# FROM node:latest AS build
+# WORKDIR /frontapp
+# COPY . .
+# RUN npm install
+# RUN npm run build
 
+# # production
+# FROM node:latest-alpine AS production
+# WORKDIR /frontapp
+# COPY --from=build /frontapp
+# CMD ["npm", "run", "serve"]

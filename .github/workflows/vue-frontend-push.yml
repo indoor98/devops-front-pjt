@@ -3,6 +3,7 @@ name : Vue Front Build and Push
 on :
   push :
     branches : [main]
+
 # 2. jobs - runner
 jobs :
   build :
@@ -14,15 +15,18 @@ jobs :
       # 4. setup node
       - name : Setup Node
         uses : actions/setup-node@v2
+
       # 5. docker build
       - name : Docker buildx
         uses : docker/setup-buildx-action@v2
+
       # 6. docker login
       - name : Docker Login
         uses : docker/login-action@v2
         with :
           username : ${{ secrets.DOCKERHUB_USERNAME }}
           password : ${{ secrets.DOCKERHUB_TOKEN }}
+          
       # 7. docker build and push
       - name : Docker push
         uses : docker/build-push-action@v2
